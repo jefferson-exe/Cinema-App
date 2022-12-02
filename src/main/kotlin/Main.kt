@@ -6,7 +6,7 @@ import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import kotlin.system.exitProcess
 
-private val noteAPI = NoteAPI()
+private val movieAPI = NoteAPI()
 
 fun main() = runMenu()
 
@@ -20,11 +20,11 @@ fun runMenu() {
             5 -> archiveMovie()
             6 -> addItemToMovie()
             7 -> updateItemContentsInMovie()
-            //8 -> deleteAnMovie()
-            8 -> markMovieStatus()
-            9 -> searchMovies()
-            //15 -> searchItems()
-            //16 -> listToDoItems()
+            8 -> deleteAnItem()
+            //9 -> markMovieStatus()
+            10 -> searchMovies()
+            15 -> searchItems()
+            16 -> listToDoItems()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -79,7 +79,7 @@ fun addMovie() {
     val movieStatus = readNextLine("Enter movie status")
     val movieNumber = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
     //val noteCategory = readNextLine("Enter a category for the movie: ")
-    val isAdded = noteAPI.add(Movie(movieTitle = movieTitle, movieGenre = movieGenre, movieAgeRating = movieAgeRating, movieStars = movieStars, movieStatus = movieStatus, movieNumber = movieNumber))
+    val isAdded = movieAPI.add(Movie(movieTitle = movieTitle, movieGenre = movieGenre, movieAgeRating = movieAgeRating, movieStars = movieStars, movieStatus = movieStatus, movieNumber = movieNumber))
 
     if (isAdded) {
         println("Added Successfully")
@@ -89,7 +89,7 @@ fun addMovie() {
 }
 
 fun listMovies() {
-    if (noteAPI.numberOfMovies() > 0) {
+    if (movieAPI.numberOfMovies() > 0) {
         val option = readNextInt(
             """
                   > --------------------------------
@@ -111,16 +111,16 @@ fun listMovies() {
     }
 }
 
-fun listAllMovies() = println(noteAPI.listAllMovies())
-fun listActiveMovies() = println(noteAPI.listActiveMovies())
-fun listArchivedMovies() = println(noteAPI.listArchivedMovies())
+fun listAllMovies() = println(movieAPI.listAllMovies())
+fun listActiveMovies() = println(movieAPI.listActiveMovies())
+fun listArchivedMovies() = println(movieAPI.listArchivedMovies())
 
 fun updateMovie() {
     listMovies()
-    if (noteAPI.numberOfMovies() > 0) {
+    if (movieAPI.numberOfMovies() > 0) {
         // only ask the user to choose the note if notes exist
         val id = readNextInt("Enter the id of the note to update: ")
-        if (noteAPI.findMovies(id) != null) {
+        if (movieAPI.findMovies(id) != null) {
             val movieTitle = readNextLine("Enter a title for the note: ")
             val movieGenre = readNextLine("Enter a priority (1-low, 2, 3, 4, 5-high): ")
             val movieAgeRating = readNextInt("Enter a category for the note: ")
@@ -129,7 +129,7 @@ fun updateMovie() {
             val movieNumber = readNextInt("Enter star rating for Movie")
 
             // pass the index of the note and the new note details to NoteAPI for updating and check for success.
-            if (noteAPI.update(id, Movie(0, movieTitle, movieGenre, movieAgeRating, movieStars, movieStatus, movieNumber, false))){
+            if (movieAPI.update(id, Movie(0, movieTitle, movieGenre, movieAgeRating, movieStars, movieStatus, movieNumber, false))){
                 println("Update Successful")
             } else {
                 println("Update Failed")
@@ -142,11 +142,11 @@ fun updateMovie() {
 
 fun deleteMovie() {
     listMovies()
-    if (noteAPI.numberOfMovies() > 0) {
+    if (movieAPI.numberOfMovies() > 0) {
         // only ask the user to choose the note to delete if notes exist
         val id = readNextInt("Enter the id of the note to delete: ")
         // pass the index of the note to NoteAPI for deleting and check for success.
-        val noteToDelete = noteAPI.delete(id)
+        val noteToDelete = movieAPI.delete(id)
         if (noteToDelete) {
             println("Delete Successful!")
         } else {
@@ -157,11 +157,11 @@ fun deleteMovie() {
 
 fun archiveMovie() {
     listActiveMovies()
-    if (noteAPI.numberOfActiveMovies() > 0) {
+    if (movieAPI.numberOfActiveMovies() > 0) {
         // only ask the user to choose the note to archive if active notes exist
         val id = readNextInt("Enter the id of the note to archive: ")
         // pass the index of the note to NoteAPI for archiving and check for success.
-        if (noteAPI.archiveMovie(id)) {
+        if (movieAPI.archiveMovie(id)) {
             println("Archive Successful!")
         } else {
             println("Archive NOT Successful")
@@ -213,7 +213,7 @@ fun deleteAnItem() {
     }
 }
 
-fun markMovieStatus() {
+fun listToDoItems() {
     val note: Movie? = askUserToChooseActiveMovie()
     if (note != null) {
         val item: Item? = askUserToChooseItem(note)
@@ -238,7 +238,7 @@ fun markMovieStatus() {
 //------------------------------------
 fun searchMovies() {
     val searchTitle = readNextLine("Enter the description to search by: ")
-    val searchResults = noteAPI.searchMoviesByTitle(searchTitle)
+    val searchResults = movieAPI.searchMoviesByTitle(searchTitle)
     if (searchResults.isEmpty()) {
         println("No notes found")
     } else {
@@ -251,7 +251,7 @@ fun searchMovies() {
 //------------------------------------
 fun searchItems() {
     val searchContents = readNextLine("Enter the item contents to search by: ")
-    val searchResults = noteAPI.searchItemByContents(searchContents)
+    val searchResults = movieAPI.searchItemByContents(searchContents)
     if (searchResults.isEmpty()) {
         println("No items found")
     } else {
@@ -259,12 +259,12 @@ fun searchItems() {
     }
 }
 
-// fun markMovieStatus(){
-   // if (noteAPI.markMovieStatus() > 0) {
-       // println("Total TODO items: ${noteAPI.numberOfToDoItems()}")
-   // }
-    // println(noteAPI.listTodoItems())
-// }
+//fun markMovieStatus(){
+    //if (movieAPI.markMovieStatus() > 0) {
+        //println("Total TODO items: ${movieAPI.numberOfToDoItems()}")
+    //}
+        //println(movieAPI.listToDoItems())
+//}
 
 
 //------------------------------------
@@ -281,28 +281,28 @@ fun exitApp() {
 
 private fun askUserToChooseActiveMovie(): Movie? {
     listActiveMovies()
-    if (noteAPI.numberOfActiveMovies() > 0) {
-        val note = noteAPI.findMovies(readNextInt("\nEnter the id of the note: "))
-        if (note != null) {
-            if (note.isMovieArchived) {
-                println("Note is NOT Active, it is Archived")
+    if (movieAPI.numberOfActiveMovies() > 0) {
+        val movie = movieAPI.findMovies(readNextInt("\nEnter the id of the movie: "))
+        if (movie != null) {
+            if (movie.isMovieArchived) {
+                println("Movie is NOT Active, it is Archived")
             } else {
-                return note //chosen note is active
+                return movie //chosen movie is active
             }
         } else {
-            println("Note id is not valid")
+            println("Movie id is not valid")
         }
     }
     return null //selected note is not active
 }
 
-private fun askUserToChooseItem(note: Movie): Item? {
-    if (note.numberOfItems() > 0) {
-        print(note.listItems())
-        return note.findOne(readNextInt("\nEnter the id of the item: "))
+private fun askUserToChooseItem(movie: Movie): Item? {
+    if (movie.numberOfItems() > 0) {
+        print(movie.listItems())
+        return movie.findOne(readNextInt("\nEnter the id of the item: "))
     }
     else{
-        println("No items for chosen note")
+        println("No items for chosen this movie")
         return null
     }
 }

@@ -15,7 +15,7 @@ class NoteAPI() {
     private fun getId() = lastId++
 
     // ----------------------------------------------
-    //  CRUD METHODS FOR NOTE ArrayList
+    //  CRUD METHODS FOR MOVIE ArrayList
     // ----------------------------------------------
     fun add(movie: Movie): Boolean {
         movie.movieId = getId()
@@ -25,10 +25,10 @@ class NoteAPI() {
     fun delete(id: Int) = movies.removeIf { movie -> movie.movieId == id }
 
     fun update(id: Int, movie: Movie?): Boolean {
-        // find the note object by the index number
+        // find the movie object by the index number
         val foundMovie = findMovies(id)
 
-        // if the note exists, use the note details passed as parameters to update the found note in the ArrayList.
+        // if the movie exists, use the note details passed as parameters to update the found note in the ArrayList.
         if ((foundMovie != null) && (movie != null)) {
             foundMovie.movieTitle = movie.movieTitle
             foundMovie.movieGenre = movie.movieGenre
@@ -36,7 +36,7 @@ class NoteAPI() {
             return true
         }
 
-        // if the note was not found, return false, indicating that the update was not successful
+        // if the movie was not found, return false, indicating that the update was not successful
         return false
     }
 
@@ -51,7 +51,7 @@ class NoteAPI() {
     }
 
     // ----------------------------------------------
-    //  LISTING METHODS FOR NOTE ArrayList
+    //  LISTING METHODS FOR MOVIE ArrayList
     // ----------------------------------------------
     fun listAllMovies() =
         if (movies.isEmpty()) "No notes stored"
@@ -66,7 +66,7 @@ class NoteAPI() {
         else formatListString(movies.filter { movies -> movies.isMovieArchived })
 
     // ----------------------------------------------
-    //  COUNTING METHODS FOR NOTE ArrayList
+    //  COUNTING METHODS FOR MOVIE ArrayList
     // ----------------------------------------------
     fun numberOfMovies() = movies.size
     fun numberOfArchivedMovies(): Int = movies.count { movie: Movie -> movie.isMovieArchived }
@@ -98,36 +98,36 @@ class NoteAPI() {
         }
     }
 
-    // ----------------------------------------------
-    //  LISTING METHODS FOR ITEMS
-    // ----------------------------------------------
-    // fun listTodoItems(): String =
-         // if (numberOfNotes() == 0) "No notes stored"
-         // else {
-             // var listOfTodoItems = ""
-             // for (note in notes) {
-                 // for (item in note.items) {
-                     // if (!item.isItemComplete) {
-                         // listOfTodoItems += note.noteTitle + ": " + item.itemContents + "\n"
-                     // }
-                 // }
-             // }
-             // listOfTodoItems
-         // }
+     // ----------------------------------------------
+      // LISTING METHODS FOR ITEMS
+     // ----------------------------------------------
+     fun listToDoItems(): String =
+          if (numberOfMovies() == 0) "No notes stored"
+          else {
+              var listOfToDoItems = ""
+              for (movie in movies) {
+                  for (item in movie.items) {
+                      if (!item.isItemComplete) {
+                          listOfToDoItems += movie.movieTitle + ": " + item.itemContents + "\n"
+                      }
+                  }
+              }
+              listOfToDoItems
+          }
 
-    // ----------------------------------------------
-    //  COUNTING METHODS FOR ITEMS
-    // ----------------------------------------------
-    // fun numberOfToDoItems(): Int {
-        // var numberOfToDoItems = 0
-        // for (note in notes) {
-            // for (item in note.items) {
-                // if (!item.isItemComplete) {
-                    // numberOfToDoItems++
-                // }
-            // }
-        // }
-        // return numberOfToDoItems
-    //}
+     // ----------------------------------------------
+      // COUNTING METHODS FOR ITEMS
+     // ----------------------------------------------
+     fun numberOfToDoItems(): Int {
+         var numberOfToDoItems = 0
+         for (movie in movies) {
+             for (item in movie.items) {
+                 if (!item.isItemComplete) {
+                     numberOfToDoItems++
+                 }
+             }
+         }
+         return numberOfToDoItems
+    }
 
 }
