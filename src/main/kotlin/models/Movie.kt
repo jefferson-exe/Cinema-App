@@ -9,36 +9,35 @@ data class Movie(var movieId: Int = 0,
                 var movieStars: Int = 0,
                 var movieStatus: String,
                 var movieNumber: Int,
-                //var movieCategory: String,
                 var isMovieArchived: Boolean = false,
-                var items : MutableSet<Item> = mutableSetOf())
+                var items : MutableSet<Cinema> = mutableSetOf())
 {
     private var lastItemId = 0
     private fun getItemId() = lastItemId++
 
-    fun addItem(item: Item) : Boolean {
-        item.itemId = getItemId()
+    fun addCinema(item: Cinema) : Boolean {
+        item.cinemaId = getItemId()
         return items.add(item)
     }
 
-    fun numberOfItems() = items.size
+    fun numberOfCinema() = items.size
 
-    fun findOne(id: Int): Item?{
-        return items.find{ item -> item.itemId == id }
+    fun findOne(id: Int): Cinema?{
+        return items.find{ item -> item.cinemaId == id }
     }
 
     fun delete(id: Int): Boolean {
-        return items.removeIf { item -> item.itemId == id}
+        return items.removeIf { item -> item.cinemaId == id}
     }
 
-    fun update(id: Int, newItem : Item): Boolean {
+    fun update(id: Int, newCinema : Cinema): Boolean {
         val foundItem = findOne(id)
 
         //if the object exists, use the details passed in the newItem parameter to
         //update the found object in the Set
         if (foundItem != null){
-            foundItem.itemContents = newItem.itemContents
-            foundItem.isItemComplete = newItem.isItemComplete
+            foundItem.cinemaAddress = newCinema.cinemaAddress
+            //foundItem.isItemComplete = newCinema.isItemComplete
             return true
         }
 
@@ -46,16 +45,16 @@ data class Movie(var movieId: Int = 0,
         return false
     }
 
-    fun checkMovieCompletionStatus(): Boolean {
-        if (items.isNotEmpty()) {
-            for (item in items) {
-                if (!item.isItemComplete) {
-                    return false
-               }
-            }
-        }
-        return true //a note with empty items can be archived, or all items are complete
-    }
+    // fun checkMovieCompletionStatus(): Boolean {
+        // if (items.isNotEmpty()) {
+            // for (item in items) {
+                // if (!item.isItemComplete) {
+                    // return false
+               //}
+            // }
+        // }
+        // return true //a note with empty items can be archived, or all items are complete
+    // }
 
     fun listItems() =
          if (items.isEmpty())  "\tNO ITEMS ADDED"
@@ -63,7 +62,7 @@ data class Movie(var movieId: Int = 0,
 
     override fun toString(): String {
         val archived = if (isMovieArchived) 'Y' else 'N'
-        return "$movieId: $movieTitle, Genre($movieGenre), movieAgeRating($movieAgeRating), movieStars($movieStars), movieStatus($movieStatus), movieNumber($movieNumber), Archived($archived) \n${listItems()}"
+        return "ID : $movieId, Movie: $movieTitle, Genre: $movieGenre, Age Rating: $movieAgeRating, Movie Stars: $movieStars, Movie Status: $movieStatus, Movie Number: $movieNumber, Archived: $archived \n${listItems()}"
     }
 
 }

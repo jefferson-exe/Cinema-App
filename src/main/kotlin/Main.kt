@@ -1,5 +1,5 @@
 import controllers.NoteAPI
-import models.Item
+import models.Cinema
 import models.Movie
 import utils.ScannerInput.readNextChar
 import utils.ScannerInput.readNextInt
@@ -24,7 +24,7 @@ fun runMenu() {
             //9 -> markMovieStatus()
             10 -> searchMovies()
             15 -> searchItems()
-            16 -> listToDoItems()
+            //16 -> listToDoItems()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -43,14 +43,14 @@ fun mainMenu() = readNextInt(
          > |   4) Delete a movie                                |
          > |   5) Archive a movie                               |
          > -----------------------------------------------------  
-         > | ITEM MENU                                          | 
-         > |   6) Add item to a movie                           |
-         > |   7) Update item contents on a movie               |
-         > |   8) Delete item from a movie                      |
-         > |   9) Mark item as complete/todo                    | 
+         > | Cinema MENU                                          | 
+         > |   6) Add Cinema to a movie                           |
+         > |   7) Update Cinema contents on a movie               |
+         > |   8) Delete Cinema from a movie                      |
+         > |   9) Mark Cinema as complete/todo                    | 
          > -----------------------------------------------------  
-         > | REPORT MENU FOR NOTES                             | 
-         > |   10) Search for all notes (by note title)        |
+         > | REPORT MENU FOR Movie                             | 
+         > |   10) Search for all movies (by note title)        |
          > |   11) .....                                       |
          > |   12) .....                                       |
          > |   13) .....                                       |
@@ -72,13 +72,12 @@ fun mainMenu() = readNextInt(
 //NOTE MENU
 //------------------------------------
 fun addMovie() {
-    val movieTitle = readNextLine("Enter a title for the movie: ")
-    val movieGenre = readNextLine("Enter movie genre")
-    val movieAgeRating = readNextInt("Enter movie age")
-    val movieStars = readNextInt("Enter number of stars")
-    val movieStatus = readNextLine("Enter movie status")
-    val movieNumber = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
-    //val noteCategory = readNextLine("Enter a category for the movie: ")
+    val movieTitle = readNextLine("Enter a title for the movie\n: ")
+    val movieGenre = readNextLine("Enter movie genre\n: ")
+    val movieAgeRating = readNextInt("Enter movie age\n: ")
+    val movieStars = readNextInt("Enter number of stars\n: ")
+    val movieStatus = readNextLine("Enter movie status\n: ")
+    val movieNumber = readNextInt("Enter movie number\n: ")
     val isAdded = movieAPI.add(Movie(movieTitle = movieTitle, movieGenre = movieGenre, movieAgeRating = movieAgeRating, movieStars = movieStars, movieStatus = movieStatus, movieNumber = movieNumber))
 
     if (isAdded) {
@@ -93,9 +92,9 @@ fun listMovies() {
         val option = readNextInt(
             """
                   > --------------------------------
-                  > |   1) View ALL notes          |
-                  > |   2) View ACTIVE notes       |
-                  > |   3) View ARCHIVED notes     |
+                  > |   1) View ALL Movies          |
+                  > |   2) View ACTIVE Movies       |
+                  > |   3) View ARCHIVED Movies     |
                   > --------------------------------
          > ==>> """.trimMargin(">")
         )
@@ -170,40 +169,41 @@ fun archiveMovie() {
 }
 
 //-------------------------------------------
-//ITEM MENU (only available for active notes)
+//MOVIE MENU (only available for active notes)
 //-------------------------------------------
 private fun addItemToMovie() {
-    val note: Movie? = askUserToChooseActiveMovie()
-    if (note != null) {
-        if (note.addItem(Item(itemContents = readNextLine("\t Item Contents: "))))
+    val movie: Movie? = askUserToChooseActiveMovie()
+    if (movie != null) {
+        if (movie.addCinema(Cinema(cinemaAddress = readNextLine("\t Cinema Address: "), cinemaName = readNextLine("\t Cinema Address: "))))
             println("Add Successful!")
         else println("Add NOT Successful")
     }
 }
 
 fun updateItemContentsInMovie() {
-    val note: Movie? = askUserToChooseActiveMovie()
-    if (note != null) {
-        val item: Item? = askUserToChooseItem(note)
+    val movie: Movie? = askUserToChooseActiveMovie()
+    if (movie != null) {
+        val item: Cinema? = askUserToChooseItem(movie)
         if (item != null) {
-            val newContents = readNextLine("Enter new contents: ")
-            if (note.update(item.itemId, Item(itemContents = newContents))) {
-                println("Item contents updated")
+            val newAddress = readNextLine("Enter new cinema address: ")
+            val newName = readNextLine("Enter new cinema name: ")
+            if (movie.update(item.cinemaId, Cinema(cinemaAddress = newAddress, cinemaName = newName))) {
+                println("Movie contents updated")
             } else {
-                println("Item contents NOT updated")
+                println("Movie contents NOT updated")
             }
         } else {
-            println("Invalid Item Id")
+            println("Invalid Cinema Id")
         }
     }
 }
 
 fun deleteAnItem() {
-    val note: Movie? = askUserToChooseActiveMovie()
-    if (note != null) {
-        val item: Item? = askUserToChooseItem(note)
+    val movie: Movie? = askUserToChooseActiveMovie()
+    if (movie != null) {
+        val item: Cinema? = askUserToChooseItem(movie)
         if (item != null) {
-            val isDeleted = note.delete(item.itemId)
+            val isDeleted = movie.delete(item.cinemaId)
             if (isDeleted) {
                 println("Delete Successful!")
             } else {
@@ -213,25 +213,7 @@ fun deleteAnItem() {
     }
 }
 
-fun listToDoItems() {
-    val note: Movie? = askUserToChooseActiveMovie()
-    if (note != null) {
-        val item: Item? = askUserToChooseItem(note)
-       if (item != null) {
-                var changeStatus = 'X'
-                if (item.isItemComplete) {
-                    changeStatus = readNextChar("The item is currently complete...do you want to mark it as TODO?")
-                    if ((changeStatus == 'Y') ||  (changeStatus == 'y'))
-                        item.isItemComplete = false
-                }
-                else {
-                    changeStatus = readNextChar("The item is currently TODO...do you want to mark it as Complete?")
-                    if ((changeStatus == 'Y') ||  (changeStatus == 'y'))
-                        item.isItemComplete = true
-                }
-       }
-    }
-}
+
 
 //------------------------------------
 //NOTE REPORTS MENU
@@ -296,13 +278,13 @@ private fun askUserToChooseActiveMovie(): Movie? {
     return null //selected note is not active
 }
 
-private fun askUserToChooseItem(movie: Movie): Item? {
-    if (movie.numberOfItems() > 0) {
+private fun askUserToChooseItem(movie: Movie): Cinema? {
+    if (movie.numberOfCinema() > 0) {
         print(movie.listItems())
-        return movie.findOne(readNextInt("\nEnter the id of the item: "))
+        return movie.findOne(readNextInt("\nEnter the id of the cinema: "))
     }
     else{
-        println("No items for chosen this movie")
+        println("No cinema for chosen this movie")
         return null
     }
 }

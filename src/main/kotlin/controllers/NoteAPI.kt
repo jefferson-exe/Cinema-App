@@ -88,7 +88,7 @@ class NoteAPI() {
             var listOfMovies = ""
             for (movie in movies) {
                 for (item in movie.items) {
-                    if (item.itemContents.contains(searchString, ignoreCase = true)) {
+                    if (item.cinemaAddress.contains(searchString, ignoreCase = true)) {
                         listOfMovies += "${movie.movieId}: ${movie.movieTitle} \n\t${item}\n"
                     }
                 }
@@ -108,7 +108,7 @@ class NoteAPI() {
               for (movie in movies) {
                   for (item in movie.items) {
                       if (!item.isItemComplete) {
-                          listOfToDoItems += movie.movieTitle + ": " + item.itemContents + "\n"
+                          listOfToDoItems += movie.movieTitle + ": " + item.cinemaAddress + "\n"
                       }
                   }
               }
