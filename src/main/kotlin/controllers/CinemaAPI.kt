@@ -63,5 +63,14 @@ class CinemaAPI {
     fun numberOfArchivedCinemas(): Int = cinemas.count { cinema: Cinema -> cinema.isCinemaArchived }
     fun numberOfCinemas(): Int = cinemas.count { cinema: Cinema -> !cinema.isCinemaArchived }
 
+    fun archiveCinema(id: Int): Boolean {
+        val foundMovie = findCinemas(id)
+        if (( foundMovie != null) && (!foundMovie.isCinemaArchived)) {
+            foundMovie.isCinemaArchived = true
+            return true
+        }
+        return false
+    }
+
     fun findCinemas(cinemaId : Int) =  cinemas.find{ cinema -> cinema.cinemaId == cinemaId }
 }

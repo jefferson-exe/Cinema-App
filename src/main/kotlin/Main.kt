@@ -23,8 +23,10 @@ fun runMenu() {
             5 -> archiveMovie()
             6 -> addCinema()
             7 -> listCinemas()
-            //7 -> askUserToChooseActiveMovie()
-            9 -> searchMovies()
+            8 -> updateCinema()
+            9 -> deleteCinema()
+            10 -> archiveCinema()
+            11 -> searchMovies()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -46,8 +48,9 @@ fun mainMenu() = readNextInt(
          > | Cinema MENU                                       | 
          > |   6) Add cinema to a movie                        |
          > |   7) List cinemas                                 |
-         > |   8) .............................                |
-         > |   9) .............................                | 
+         > |   8) Update a cinema                              |
+         > |   9) Delete a cinema                              |
+         > |   10) Archive cinema                              | 
          > -----------------------------------------------------    
          > |   0) Exit                                         |
          > -----------------------------------------------------  
@@ -63,8 +66,7 @@ fun addMovie() {
     val movieAgeRating = readNextInt("Enter movie age\n: ")
     val movieStars = readNextInt("Enter number of stars\n: ")
     val movieStatus = readNextLine("Enter movie status\n: ")
-    val movieNumber = readNextInt("Enter movie number\n: ")
-    val isAdded = movieAPI.add(Movie(movieTitle = movieTitle, movieGenre = movieGenre, movieAgeRating = movieAgeRating, movieStars = movieStars, movieStatus = movieStatus, movieNumber = movieNumber))
+    val isAdded = movieAPI.add(Movie(movieTitle = movieTitle, movieGenre = movieGenre, movieAgeRating = movieAgeRating, movieStars = movieStars, movieStatus = movieStatus))
 
     if (isAdded) {
         println("Added Successfully")
@@ -106,15 +108,14 @@ fun updateMovie() {
         // only ask the user to choose the note if notes exist
         val id = readNextInt("Enter the id of the note to update: ")
         if (movieAPI.findMovies(id) != null) {
-            val movieTitle = readNextLine("Enter a title for the note: ")
-            val movieGenre = readNextLine("Enter a priority (1-low, 2, 3, 4, 5-high): ")
-            val movieAgeRating = readNextInt("Enter a category for the note: ")
-            val movieStars = readNextInt("Enter star rating for Movie")
-            val movieStatus = readNextLine("Enter star rating for Movie")
-            val movieNumber = readNextInt("Enter star rating for Movie")
+            val movieTitle = readNextLine("Enter a new title for movie\n: ")
+            val movieGenre = readNextLine("Enter a new genre for movie\n: ")
+            val movieAgeRating = readNextInt("Enter new age rating for movie: ")
+            val movieStars = readNextInt("Enter new star rating for movie")
+            val movieStatus = readNextLine("Enter new status for movie")
 
             // pass the index of the note and the new note details to NoteAPI for updating and check for success.
-            if (movieAPI.update(id, Movie(0, movieTitle, movieGenre, movieAgeRating, movieStars, movieStatus, movieNumber, false))){
+            if (movieAPI.update(id, Movie(0, movieTitle, movieGenre, movieAgeRating, movieStars, movieStatus, false))){
                 println("Update Successful")
             } else {
                 println("Update Failed")
@@ -202,6 +203,59 @@ fun listCinemas() {
 fun listAllCinemas() = println(cinemaAPI.listAllCinemas())
 fun listCurrentCinema() = println(cinemaAPI.listCurrentCinema())
 fun listArchivedCinemas() = println(cinemaAPI.listArchivedCinemas())
+
+fun updateCinema() {
+    listMovies()
+    if (cinemaAPI.numberOfCinemas() > 0) {
+        // only ask the user to choose the note if notes exist
+        val id = readNextInt("Enter the id of the cinema to update: ")
+        if (cinemaAPI.findCinemas(id) != null) {
+            val cinemaName = readNextLine("Enter new name for cinema\n: ")
+            val cinemaAddress = readNextLine("Enter new cinema address\n: ")
+            val cinemaPhone = readNextInt("Enter cinema new phone number\n: ")
+            val numberOfScreens = readNextInt("Enter new number of screens for cinema\n: ")
+            val cinemaEmail = readNextLine("Enter new cinema email\n: ")
+
+            // pass the index of the note and the new note details to NoteAPI for updating and check for success.
+            if (cinemaAPI.update(id, Cinema(0, cinemaName, cinemaAddress, cinemaPhone, numberOfScreens, cinemaEmail, false))){
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+            }
+        } else {
+            println("There is no cinema with this index number")
+        }
+    }
+}
+
+fun deleteCinema() {
+    listMovies()
+    if (cinemaAPI.numberOfCinemas() > 0) {
+        // only ask the user to choose the note to delete if notes exist
+        val id = readNextInt("Enter the id of the cinema to delete: ")
+        // pass the index of the note to NoteAPI for deleting and check for success.
+        val cinemaToDelete = cinemaAPI.delete(id)
+        if (cinemaToDelete) {
+            println("Delete Successful!")
+        } else {
+            println("Delete NOT Successful")
+        }
+    }
+}
+
+fun archiveCinema() {
+    listCurrentCinema()
+    if (cinemaAPI.numberOfCinemas() > 0) {
+        // only ask the user to choose the note to archive if active notes exist
+        val id = readNextInt("Enter the id of the cinema to archive: ")
+        // pass the index of the note to NoteAPI for archiving and check for success.
+        if (cinemaAPI.archiveCinema(id)) {
+            println("Archive Successful!")
+        } else {
+            println("Archive NOT Successful")
+        }
+    }
+}
 
 //------------------------------------
 //NOTE REPORTS MENU

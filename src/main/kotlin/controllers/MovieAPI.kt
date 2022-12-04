@@ -35,7 +35,6 @@ class MovieAPI() {
             foundMovie.movieAgeRating = movie.movieAgeRating
             foundMovie.movieStars = movie.movieStars
             foundMovie.movieStatus = movie.movieStatus
-            foundMovie.movieNumber = movie.movieNumber
 
             return true
         }
