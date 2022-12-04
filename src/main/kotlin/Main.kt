@@ -46,7 +46,7 @@ fun mainMenu() = readNextInt(
          > |   5) Archive a movie                              |
          > -----------------------------------------------------  
          > | Cinema MENU                                       | 
-         > |   6) Add cinema to a movie                        |
+         > |   6) Add cinema                                   |
          > |   7) List cinemas                                 |
          > |   8) Update a cinema                              |
          > |   9) Delete a cinema                              |
