@@ -4,7 +4,7 @@ import models.Movie
 import utils.Utilities.formatListString
 import java.util.ArrayList
 
-class NoteAPI() {
+class MovieAPI() {
 
     private var movies = ArrayList<Movie>()
 
@@ -32,7 +32,11 @@ class NoteAPI() {
         if ((foundMovie != null) && (movie != null)) {
             foundMovie.movieTitle = movie.movieTitle
             foundMovie.movieGenre = movie.movieGenre
-            //foundMovie.movieCategory = movie.movieCategory
+            foundMovie.movieAgeRating = movie.movieAgeRating
+            foundMovie.movieStars = movie.movieStars
+            foundMovie.movieStatus = movie.movieStatus
+            foundMovie.movieNumber = movie.movieNumber
+
             return true
         }
 
@@ -42,8 +46,7 @@ class NoteAPI() {
 
     fun archiveMovie(id: Int): Boolean {
         val foundMovie = findMovies(id)
-        if (( foundMovie != null) && (!foundMovie.isMovieArchived)
-            && ( foundMovie.checkMovieCompletionStatus())) {
+        if (( foundMovie != null) && (!foundMovie.isMovieArchived)) {
               foundMovie.isMovieArchived = true
               return true
         }
@@ -81,53 +84,4 @@ class NoteAPI() {
        formatListString(
             movies.filter { movie -> movie.movieTitle.contains(searchString, ignoreCase = true) }
         )
-
-    fun searchItemByContents(searchString: String): String {
-        return if (numberOfMovies() == 0) "No notes stored"
-        else {
-            var listOfMovies = ""
-            for (movie in movies) {
-                for (item in movie.items) {
-                    if (item.cinemaAddress.contains(searchString, ignoreCase = true)) {
-                        listOfMovies += "${movie.movieId}: ${movie.movieTitle} \n\t${item}\n"
-                    }
-                }
-            }
-            if (listOfMovies == "") "No items found for: $searchString"
-            else listOfMovies
-        }
-    }
-
-     // ----------------------------------------------
-      // LISTING METHODS FOR ITEMS
-     // ----------------------------------------------
-     fun listToDoItems(): String =
-          if (numberOfMovies() == 0) "No notes stored"
-          else {
-              var listOfToDoItems = ""
-              for (movie in movies) {
-                  for (item in movie.items) {
-                      if (!item.isItemComplete) {
-                          listOfToDoItems += movie.movieTitle + ": " + item.cinemaAddress + "\n"
-                      }
-                  }
-              }
-              listOfToDoItems
-          }
-
-     // ----------------------------------------------
-      // COUNTING METHODS FOR ITEMS
-     // ----------------------------------------------
-     fun numberOfToDoItems(): Int {
-         var numberOfToDoItems = 0
-         for (movie in movies) {
-             for (item in movie.items) {
-                 if (!item.isItemComplete) {
-                     numberOfToDoItems++
-                 }
-             }
-         }
-         return numberOfToDoItems
-    }
-
 }

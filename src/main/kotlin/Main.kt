@@ -1,4 +1,5 @@
-import controllers.NoteAPI
+import controllers.CinemaAPI
+import controllers.MovieAPI
 import models.Cinema
 import models.Movie
 import utils.ScannerInput.readNextChar
@@ -6,7 +7,9 @@ import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import kotlin.system.exitProcess
 
-private val movieAPI = NoteAPI()
+private val movieAPI = MovieAPI()
+private val cinemaAPI = CinemaAPI()
+
 
 fun main() = runMenu()
 
@@ -18,13 +21,10 @@ fun runMenu() {
             3 -> updateMovie()
             4 -> deleteMovie()
             5 -> archiveMovie()
-            6 -> addItemToMovie()
-            7 -> updateItemContentsInMovie()
-            8 -> deleteAnItem()
-            //9 -> markMovieStatus()
-            10 -> searchMovies()
-            15 -> searchItems()
-            //16 -> listToDoItems()
+            6 -> addCinema()
+            7 -> listCinemas()
+            //7 -> askUserToChooseActiveMovie()
+            9 -> searchMovies()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -34,42 +34,28 @@ fun runMenu() {
 fun mainMenu() = readNextInt(
         """ 
          > -----------------------------------------------------  
-         > |                  CINEMA APP                        |
+         > |                  CINEMA APP                       |
          > -----------------------------------------------------  
-         > | Movie MENU                                         |
-         > |   1) Add a movie                                   |
-         > |   2) List movies                                   |
-         > |   3) Update a movie                                |
-         > |   4) Delete a movie                                |
-         > |   5) Archive a movie                               |
+         > | Movie MENU                                        |
+         > |   1) Add a movie                                  |
+         > |   2) List movies                                  |
+         > |   3) Update a movie                               |
+         > |   4) Delete a movie                               |
+         > |   5) Archive a movie                              |
          > -----------------------------------------------------  
-         > | Cinema MENU                                          | 
-         > |   6) Add Cinema to a movie                           |
-         > |   7) Update Cinema contents on a movie               |
-         > |   8) Delete Cinema from a movie                      |
-         > |   9) Mark Cinema as complete/todo                    | 
-         > -----------------------------------------------------  
-         > | REPORT MENU FOR Movie                             | 
-         > |   10) Search for all movies (by note title)        |
-         > |   11) .....                                       |
-         > |   12) .....                                       |
-         > |   13) .....                                       |
-         > |   14) .....                                       |
-         > -----------------------------------------------------  
-         > | REPORT MENU FOR ITEMS                             |                                
-         > |   15) Search for all items (by item description)  |
-         > |   16) List TODO Items                             |
-         > |   17) .....                                       |
-         > |   18) .....                                       |
-         > |   19) .....                                       |
-         > -----------------------------------------------------  
+         > | Cinema MENU                                       | 
+         > |   6) Add cinema to a movie                        |
+         > |   7) List cinemas                                 |
+         > |   8) .............................                |
+         > |   9) .............................                | 
+         > -----------------------------------------------------    
          > |   0) Exit                                         |
          > -----------------------------------------------------  
          > ==>> """.trimMargin(">")
     )
 
 //------------------------------------
-//NOTE MENU
+//MOVIE MENU
 //------------------------------------
 fun addMovie() {
     val movieTitle = readNextLine("Enter a title for the movie\n: ")
@@ -168,52 +154,54 @@ fun archiveMovie() {
     }
 }
 
-//-------------------------------------------
-//MOVIE MENU (only available for active notes)
-//-------------------------------------------
-private fun addItemToMovie() {
-    val movie: Movie? = askUserToChooseActiveMovie()
-    if (movie != null) {
-        if (movie.addCinema(Cinema(cinemaAddress = readNextLine("\t Cinema Address: "), cinemaName = readNextLine("\t Cinema Address: "))))
-            println("Add Successful!")
-        else println("Add NOT Successful")
+//------------------------------------
+//CINEMA MENU
+//------------------------------------
+fun addCinema() {
+    val cinemaName = readNextLine("Enter name for cinema\n: ")
+    val cinemaAddress = readNextLine("Enter cinema address\n: ")
+    val cinemaPhone = readNextInt("Enter cinema phone number\n: ")
+    val numberOfScreens = readNextInt("Enter number of screens for cinema\n: ")
+    val cinemaEmail = readNextLine("Enter cinema email\n: ")
+    val isAdded = cinemaAPI.add(Cinema(cinemaName = cinemaName,
+        cinemaAddress = cinemaAddress,
+        cinemaPhone = cinemaPhone,
+        numberOfScreens = numberOfScreens,
+        cinemaEmail = cinemaEmail))
+
+    if (isAdded) {
+        println("Added Successfully")
+    } else {
+        println("Add Failed")
     }
 }
 
-fun updateItemContentsInMovie() {
-    val movie: Movie? = askUserToChooseActiveMovie()
-    if (movie != null) {
-        val item: Cinema? = askUserToChooseItem(movie)
-        if (item != null) {
-            val newAddress = readNextLine("Enter new cinema address: ")
-            val newName = readNextLine("Enter new cinema name: ")
-            if (movie.update(item.cinemaId, Cinema(cinemaAddress = newAddress, cinemaName = newName))) {
-                println("Movie contents updated")
-            } else {
-                println("Movie contents NOT updated")
-            }
-        } else {
-            println("Invalid Cinema Id")
+fun listCinemas() {
+    if (cinemaAPI.numberOfCinemas() > 0) {
+        val option = readNextInt(
+            """
+                  > --------------------------------
+                  > |   1) View ALL Cinemas          |
+                  > |   2) View Current Cinema       |
+                  > |   3) View ARCHIVED Cinemas     |
+                  > --------------------------------
+         > ==>> """.trimMargin(">")
+        )
+
+        when (option) {
+            1 -> listAllCinemas()
+            2 -> listCurrentCinema()
+            3 -> listArchivedCinemas()
+            else -> println("Invalid option entered: $option")
         }
+    } else {
+        println("Option Invalid - No notes stored")
     }
 }
 
-fun deleteAnItem() {
-    val movie: Movie? = askUserToChooseActiveMovie()
-    if (movie != null) {
-        val item: Cinema? = askUserToChooseItem(movie)
-        if (item != null) {
-            val isDeleted = movie.delete(item.cinemaId)
-            if (isDeleted) {
-                println("Delete Successful!")
-            } else {
-                println("Delete NOT Successful")
-            }
-        }
-    }
-}
-
-
+fun listAllCinemas() = println(cinemaAPI.listAllCinemas())
+fun listCurrentCinema() = println(cinemaAPI.listCurrentCinema())
+fun listArchivedCinemas() = println(cinemaAPI.listArchivedCinemas())
 
 //------------------------------------
 //NOTE REPORTS MENU
@@ -227,26 +215,6 @@ fun searchMovies() {
         println(searchResults)
     }
 }
-
-//------------------------------------
-//ITEM REPORTS MENU
-//------------------------------------
-fun searchItems() {
-    val searchContents = readNextLine("Enter the item contents to search by: ")
-    val searchResults = movieAPI.searchItemByContents(searchContents)
-    if (searchResults.isEmpty()) {
-        println("No items found")
-    } else {
-        println(searchResults)
-    }
-}
-
-//fun markMovieStatus(){
-    //if (movieAPI.markMovieStatus() > 0) {
-        //println("Total TODO items: ${movieAPI.numberOfToDoItems()}")
-    //}
-        //println(movieAPI.listToDoItems())
-//}
 
 
 //------------------------------------
@@ -276,15 +244,4 @@ private fun askUserToChooseActiveMovie(): Movie? {
         }
     }
     return null //selected note is not active
-}
-
-private fun askUserToChooseItem(movie: Movie): Cinema? {
-    if (movie.numberOfCinema() > 0) {
-        print(movie.listItems())
-        return movie.findOne(readNextInt("\nEnter the id of the cinema: "))
-    }
-    else{
-        println("No cinema for chosen this movie")
-        return null
-    }
 }
