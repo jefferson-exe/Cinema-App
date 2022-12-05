@@ -23,7 +23,7 @@ class CinemaAPI {
         return cinemas.add(cinema)
     }
 
-    fun delete(id: Int) = cinemas.removeIf { cinema -> cinema.cinemaId == id }
+    fun deleteCinema(id: Int) = cinemas.removeIf { cinema -> cinema.cinemaId == id }
 
     fun update(id: Int, cinema: Cinema?): Boolean {
         // find the movie object by the index number
@@ -63,6 +63,18 @@ class CinemaAPI {
     fun numberOfArchivedCinemas(): Int = cinemas.count { cinema: Cinema -> cinema.isCinemaArchived }
     fun numberOfCinemas(): Int = cinemas.count { cinema: Cinema -> !cinema.isCinemaArchived }
 
+    fun findCinemas(index: Int): Cinema? {
+        return if (isValidListIndex(index, cinemas)) {
+            cinemas[index]
+        } else null
+    }
+
+    //utility method to determine if an index is valid in a list.
+    fun isValidListIndex(index: Int, list: List<Any>): Boolean {
+        return (index >= 0 && index < list.size)
+    }
+
+
     fun archiveCinema(id: Int): Boolean {
         val foundMovie = findCinemas(id)
         if (( foundMovie != null) && (!foundMovie.isCinemaArchived)) {
@@ -72,5 +84,5 @@ class CinemaAPI {
         return false
     }
 
-    fun findCinemas(cinemaId : Int) =  cinemas.find{ cinema -> cinema.cinemaId == cinemaId }
+    //fun findCinemas(cinemaId : Int) =  cinemas.find{ cinema -> cinema.cinemaId == cinemaId }
 }

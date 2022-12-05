@@ -234,7 +234,7 @@ fun deleteCinema() {
         // only ask the user to choose the note to delete if notes exist
         val id = readNextInt("Enter the id of the cinema to delete: ")
         // pass the index of the note to NoteAPI for deleting and check for success.
-        val cinemaToDelete = cinemaAPI.delete(id)
+        val cinemaToDelete = cinemaAPI.deleteCinema(id)
         if (cinemaToDelete) {
             println("Delete Successful!")
         } else {
