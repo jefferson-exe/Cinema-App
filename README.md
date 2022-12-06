@@ -14,16 +14,16 @@ During the creation process the features that I have added to the app includes:
 ### Cinema
 - addCinema
 - updateCinema
-- archiveCinema
+- maekFavouriteCinema
 - deleteCinema
-- listCinema (with sub menu - listAllCinemas, listCurrentCinema, listArchivedCinemas)
+- listCinema (with sub menu - listAllCinemas, listCurrentCinema, listFavouriteCinemas)
 
 ### Movie
 - addMovie
 - updateMovie
-- archiveMovie
+- markWatchLaterMovie
 - deleteMovie
-- listMovie (with sub menu - listAllMovies, listCurrentMovie, listArchivedMovie)
+- listMovie (with sub menu - listAllMovies, listCurrentMovie, listWatchLaterMovie)
 
 ### 2. Gradle task (lab 10)
 #### Adding Dokka
