@@ -45,9 +45,9 @@ class MovieAPI() {
 
     fun archiveMovie(id: Int): Boolean {
         val foundMovie = findMovies(id)
-        if (( foundMovie != null) && (!foundMovie.isMovieArchived)) {
-              foundMovie.isMovieArchived = true
-              return true
+        if ((foundMovie != null) && (!foundMovie.isMovieArchived)) {
+            foundMovie.isMovieArchived = true
+            return true
         }
         return false
     }
@@ -77,10 +77,10 @@ class MovieAPI() {
     // ----------------------------------------------
     //  SEARCHING METHODS
     // ---------------------------------------------
-    fun findMovies(noteId : Int) =  movies.find{ movie -> movie.movieId == noteId }
+    fun findMovies(noteId: Int) = movies.find { movie -> movie.movieId == noteId }
 
     fun searchMoviesByTitle(searchString: String) =
-       formatListString(
+        formatListString(
             movies.filter { movie -> movie.movieTitle.contains(searchString, ignoreCase = true) }
         )
 }

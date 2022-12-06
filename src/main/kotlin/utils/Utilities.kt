@@ -11,16 +11,15 @@ object Utilities {
     @JvmStatic
     fun formatListString(moviesToFormat: List<Movie>): String =
         moviesToFormat
-            .joinToString(separator = "\n") { movie ->  "$movie" }
+            .joinToString(separator = "\n") { movie -> "$movie" }
 
     @JvmStatic
     fun formatCinemaListString(cinemasToFormat: List<Cinema>): String =
         cinemasToFormat
-            .joinToString(separator = "\n") { cinema ->  "$cinema" }
+            .joinToString(separator = "\n") { cinema -> "$cinema" }
 
     @JvmStatic
     fun formatSetString(itemsToFormat: Set<Cinema>): String =
         itemsToFormat
-            .joinToString(separator = "\n") { item ->  "\t$item" }
-
+            .joinToString(separator = "\n") { item -> "\t$item" }
 }

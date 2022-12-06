@@ -2,10 +2,9 @@ package controllers
 
 import models.Cinema
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.assertFalse
 import kotlin.test.assertEquals
-
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 class CinemaAPITest {
     private var learnKotlin: Cinema? = null
     private var summerHoliday: Cinema? = null
@@ -16,14 +15,14 @@ class CinemaAPITest {
     private var emptyNotes: CinemaAPI? = CinemaAPI()
 
     @BeforeEach
-    fun setup(){
+    fun setup() {
         learnKotlin = Cinema(0, "Pizza", "Car", 0, 4, "Shower", false)
         summerHoliday = Cinema(1, "Cake", "Work", 0, 4, "Work", false)
         codeApp = Cinema(2, "Chocolate", "Pineapple", 0, 4, "Earth", false)
         testApp = Cinema(3, "Cookie", "Mall", 0, 4, "Pie", false)
         swim = Cinema(4, "Mango", "Battery", 0, 4, "Seagull", false)
 
-        //adding 5 Note to the notes api
+        // adding 5 Note to the notes api
         populatedNotes!!.add(learnKotlin!!)
         populatedNotes!!.add(summerHoliday!!)
         populatedNotes!!.add(codeApp!!)
@@ -32,7 +31,7 @@ class CinemaAPITest {
     }
 
     @AfterEach
-    fun tearDown(){
+    fun tearDown() {
         learnKotlin = null
         summerHoliday = null
         codeApp = null
@@ -45,7 +44,7 @@ class CinemaAPITest {
     @Nested
     inner class AddCinema {
         @Test
-        fun `adding a Cinema to a populated list adds to ArrayList`(){
+        fun `adding a Cinema to a populated list adds to ArrayList`() {
             val newCinema = Cinema(0, "Fruit", "Blueberry", 0, 4, "Salt", false)
             assertEquals(5, populatedNotes!!.numberOfCinemas())
             assertTrue(populatedNotes!!.add(newCinema))
@@ -54,7 +53,7 @@ class CinemaAPITest {
         }
 
         @Test
-        fun `adding a Cinema to an empty list adds to ArrayList`(){
+        fun `adding a Cinema to an empty list adds to ArrayList`() {
             val newCinema = Cinema(0, "Pork", "Cranberry", 0, 4, "Hawk", false)
             assertEquals(0, emptyNotes!!.numberOfCinemas())
             assertTrue(emptyNotes!!.add(newCinema))
@@ -65,7 +64,6 @@ class CinemaAPITest {
 
     @Nested
     inner class ListCinemas {
-
 
         @Test
         fun `listAllNotes returns No Notes Stored message when ArrayList is empty`() {
@@ -84,12 +82,53 @@ class CinemaAPITest {
             assertFalse(notesString.contains("summer holiday"))
         }
 
-        @Test
-        fun `listArchivedNotes returns no archived notes when ArrayList is empty`() {
-            Assertions.assertEquals(0, emptyNotes!!.numberOfArchivedCinemas())
+         @Test
+         fun `listArchivedNotes returns no archived notes when ArrayList is empty`() {
+            assertEquals(0, emptyNotes!!.numberOfArchivedCinemas())
             assertTrue(
-                emptyNotes!!.listArchivedCinemas().lowercase().contains("no archived notes")
-            )
+            emptyNotes!!.listArchivedCinemas().lowercase().contains("no archived notes"))
+         }
+
+        @Test
+        fun `listArchivedNotes returns archived notes when ArrayList has archived notes stored`() {
+            Assertions.assertEquals(0, populatedNotes!!.numberOfArchivedCinemas())
+            val archivedNotesString = populatedNotes!!.listArchivedCinemas().lowercase()
+            assertFalse(archivedNotesString.contains("learning kotlin"))
+            assertFalse(archivedNotesString.contains("code app"))
+            assertFalse(archivedNotesString.contains("summer holiday"))
+            assertFalse(archivedNotesString.contains("test app"))
+            assertFalse(archivedNotesString.contains("swim"))
+        }
+
+        @Test
+        fun `listActiveNotes returns active notes when ArrayList has active notes stored`() {
+            Assertions.assertEquals(5, populatedNotes!!.numberOfActiveCinemas())
+            val activeNotesString = populatedNotes!!.listCurrentCinema().lowercase()
+            assertFalse(activeNotesString.contains("learning kotlin"))
+            assertFalse(activeNotesString.contains("code app"))
+            assertFalse(activeNotesString.contains("summer holiday"))
+            assertFalse(activeNotesString.contains("test app"))
+            assertFalse(activeNotesString.contains("swim"))
+        }
+    }
+
+    @Nested
+    inner class DeleteNotes {
+
+        @Test
+        fun `deleting a Note that does not exist, returns null`() {
+            Assertions.assertNull(emptyNotes!!.deleteCinema(0))
+            Assertions.assertNull(populatedNotes!!.deleteCinema(-1))
+            Assertions.assertNull(populatedNotes!!.deleteCinema(5))
+        }
+
+        @Test
+        fun `deleting a note that exists delete and returns deleted object`() {
+            Assertions.assertEquals(5, populatedNotes!!.numberOfCinemas())
+            assertEquals(swim, populatedNotes!!.deleteCinema(4))
+            Assertions.assertEquals(4, populatedNotes!!.numberOfCinemas())
+            assertEquals(learnKotlin, populatedNotes!!.deleteCinema(0))
+            Assertions.assertEquals(3, populatedNotes!!.numberOfCinemas())
         }
     }
 }

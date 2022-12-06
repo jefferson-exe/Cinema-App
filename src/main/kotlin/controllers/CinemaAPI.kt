@@ -1,7 +1,6 @@
 package controllers
 
 import models.Cinema
-import models.Movie
 import utils.Utilities
 import java.util.ArrayList
 
@@ -23,7 +22,12 @@ class CinemaAPI {
         return cinemas.add(cinema)
     }
 
-    fun deleteCinema(id: Int) = cinemas.removeIf { cinema -> cinema.cinemaId == id }
+    //fun deleteCinema(id: Int) = cinemas.removeIf { cinema -> cinema.cinemaId == id }
+    fun deleteCinema(indexToDelete: Int): Cinema? {
+        return if (isValidListIndex(indexToDelete, cinemas)) {
+            cinemas.removeAt(indexToDelete)
+        } else null
+    }
 
     fun update(id: Int, cinema: Cinema?): Boolean {
         // find the movie object by the index number
@@ -69,20 +73,19 @@ class CinemaAPI {
         } else null
     }
 
-    //utility method to determine if an index is valid in a list.
+    // utility method to determine if an index is valid in a list.
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }
 
-
     fun archiveCinema(id: Int): Boolean {
         val foundMovie = findCinemas(id)
-        if (( foundMovie != null) && (!foundMovie.isCinemaArchived)) {
+        if ((foundMovie != null) && (!foundMovie.isCinemaArchived)) {
             foundMovie.isCinemaArchived = true
             return true
         }
         return false
     }
 
-    //fun findCinemas(cinemaId : Int) =  cinemas.find{ cinema -> cinema.cinemaId == cinemaId }
+    // fun findCinemas(cinemaId : Int) =  cinemas.find{ cinema -> cinema.cinemaId == cinemaId }
 }
