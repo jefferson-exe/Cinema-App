@@ -31,7 +31,9 @@ In this part of the app creation I have added documentation tool called Dokka vi
 and added the code in my build.gradle.kts: 
 
 plugins {
-    kotlin("jvm") version "1.7.10"
+
+    // kotlin("jvm") version "1.7.10"
+    
     // Plugin for Dokka - KDoc generating tool
     id("org.jetbrains.dokka") version "1.6.10"
     application
@@ -40,12 +42,34 @@ plugins {
 I have also included the dependencies to generate a Dokka Site with this code and sync it to gradle:
 
 dependencies {
-    testImplementation(kotlin("test"))
 
+    // testImplementation(kotlin("test"))
+    
     // For generating a Dokka Site from KDoc
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.6.10")
     
     
+}
+
+#### Adding Jacoco
+I have added Jacoco for generating a website for code coverage:
+
+plugins {
+
+    // kotlin("jvm") version "1.7.10"
+    // Plugin for Dokka - KDoc generating tool
+    // id("org.jetbrains.dokka") version "1.6.10"
+    // jacoco
+    // application
+}
+
+In order to run the new tasks Jacoco I added the following code in the build.gradle.kts file:
+
+tasks.test {
+
+    // useJUnitPlatform()
+    // report is always generated after tests run
+    // finalizedBy(tasks.jacocoTestReport)
 }
 
 ### 3. Gradle task (lab 10)
