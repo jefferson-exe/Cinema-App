@@ -21,15 +21,16 @@ fun runMenu() {
             2 -> listMovies()
             3 -> updateMovie()
             4 -> deleteMovie()
-            5 -> archiveMovie()
-            6 -> addCinema()
-            7 -> listCinemas()
-            8 -> updateCinema()
-            9 -> deleteCinema()
-            10 -> archiveCinema()
-            12 -> writeReceiptToFile()
-            13 -> readReceiptFile()
-            14 -> searchMovies()
+            5 -> watchLaterMovies()
+            6 -> searchMovies()
+            7 -> askUserToChooseActiveMovie()
+            8 -> addCinema()
+            9 -> listCinemas()
+            10 -> updateCinema()
+            11 -> deleteCinema()
+            12 -> markFavouriteCinema()
+            13 -> writeReceiptToFile()
+            14 -> readReceiptFile()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -46,18 +47,20 @@ fun mainMenu() = readNextInt(
          > |   2) List movies                                  |
          > |   3) Update a movie                               |
          > |   4) Delete a movie                               |
-         > |   5) Archive a movie                              |
+         > |   5) Add movie to watch later                     |
+         > |   6) Search movies                                |
+         > |   7) Ask user to choose active movie              |
          > -----------------------------------------------------  
          > | Cinema MENU                                       | 
-         > |   6) Add cinema                                   |
-         > |   7) List cinemas                                 |
-         > |   8) Update a cinema                              |
-         > |   9) Delete a cinema                              |
-         > |   10) Archive cinema                              |
+         > |   8) Add cinema                                   |
+         > |   9) List cinemas                                 |
+         > |   10) Update a cinema                             |
+         > |   11) Delete a cinema                             |
+         > |   12) Archive cinema                              |
          > -----------------------------------------------------
          > | Read and write MENU                               |
-         > |   12) Write receipt to file                       | 
-         > |   13) Read receipt from file                      | 
+         > |   13) Write receipt to file                       | 
+         > |   14) Read receipt from file                      | 
          > -----------------------------------------------------    
          > |   0) Exit                                         |
          > -----------------------------------------------------  
@@ -89,7 +92,7 @@ fun listMovies() {
                   > --------------------------------
                   > |   1) View ALL Movies          |
                   > |   2) View ACTIVE Movies       |
-                  > |   3) View ARCHIVED Movies     |
+                  > |   3) View favourite Movies     |
                   > --------------------------------
          > ==>> """.trimMargin(">")
         )
@@ -97,17 +100,17 @@ fun listMovies() {
         when (option) {
             1 -> listAllMovies()
             2 -> listActiveMovies()
-            3 -> listArchivedMovies()
+            3 -> listFavouriteMovies()
             else -> println("Invalid option entered: $option")
         }
     } else {
-        println("Option Invalid - No notes stored")
+        println("Option Invalid - No movies stored")
     }
 }
 
 fun listAllMovies() = println(movieAPI.listAllMovies())
 fun listActiveMovies() = println(movieAPI.listActiveMovies())
-fun listArchivedMovies() = println(movieAPI.listArchivedMovies())
+fun listFavouriteMovies() = println(movieAPI.listArchivedMovies())
 
 fun updateMovie() {
     listMovies()
@@ -148,16 +151,16 @@ fun deleteMovie() {
     }
 }
 
-fun archiveMovie() {
+fun watchLaterMovies() {
     listActiveMovies()
     if (movieAPI.numberOfActiveMovies() > 0) {
-        // only ask the user to choose the note to archive if active notes exist
-        val id = readNextInt("Enter the id of the note to archive: ")
-        // pass the index of the note to NoteAPI for archiving and check for success.
-        if (movieAPI.archiveMovie(id)) {
-            println("Archive Successful!")
+        // only ask the user to choose the movie to archive if active notes exist
+        val id = readNextInt("Enter the id of the movie to watch for later: ")
+        // pass the index of the note to MovieAPI for archiving and check for success.
+        if (movieAPI.watchLaterMovies(id)) {
+            println("Movie watch for later Successful!")
         } else {
-            println("Archive NOT Successful")
+            println("Mark watch for later not Successful")
         }
     }
 }
@@ -192,18 +195,18 @@ fun listCinemas() {
     if (cinemaAPI.numberOfCinemas() > 0) {
         val option = readNextInt(
             """
-                  > --------------------------------
+                  > ----------------------------------
                   > |   1) View ALL Cinemas          |
                   > |   2) View Current Cinema       |
                   > |   3) View ARCHIVED Cinemas     |
-                  > --------------------------------
+                  > ----------------------------------
          > ==>> """.trimMargin(">")
         )
 
         when (option) {
             1 -> listAllCinemas()
             2 -> listCurrentCinema()
-            3 -> listArchivedCinemas()
+            3 -> listFavouriteCinemas()
             else -> println("Invalid option entered: $option")
         }
     } else {
@@ -213,7 +216,7 @@ fun listCinemas() {
 
 fun listAllCinemas() = println(cinemaAPI.listAllCinemas())
 fun listCurrentCinema() = println(cinemaAPI.listCurrentCinema())
-fun listArchivedCinemas() = println(cinemaAPI.listArchivedCinemas())
+fun listFavouriteCinemas() = println(cinemaAPI.listArchivedCinemas())
 
 fun updateCinema() {
     listMovies()
@@ -240,31 +243,30 @@ fun updateCinema() {
 }
 
 fun deleteCinema() {
-    //logger.info { "deleteNotes() function invoked" }
     listAllCinemas()
     if (cinemaAPI.numberOfCinemas() > 0) {
-        // only ask the user to choose the cinema to delete if notes exist
+        // only ask the user to choose the cinema to delete if cinema exist
         val indexToDelete = readNextInt("Enter the index of the note to delete: ")
-        //pass the index of the cinema to CinemaAPI for deleting and check for success.
-        val noteToDelete = cinemaAPI.deleteCinema(indexToDelete)
-        if (noteToDelete != null) {
-            println("Delete Successful! Deleted note: ${noteToDelete.cinemaName}")
+        // pass the index of the cinema to CinemaAPI for deleting and check for success.
+        val cinemaToDelete = cinemaAPI.deleteCinema(indexToDelete)
+        if (cinemaToDelete != null) {
+            println("Delete Successful! Deleted cinema: ${cinemaToDelete.cinemaName}")
         } else {
             println("Delete NOT Successful")
         }
     }
 }
 
-fun archiveCinema() {
+fun markFavouriteCinema() {
     listCurrentCinema()
     if (cinemaAPI.numberOfCinemas() > 0) {
-        // only ask the user to choose the cinema to archive if current cinema exist
-        val id = readNextInt("Enter the id of the cinema to archive: ")
-        // pass the index of the cinema to CinemaAPI for archiving and check for success.
+        // only ask the user to choose the cinema to mark favourite if current cinema exist
+        val id = readNextInt("Enter the id of the cinema to mark favourite: ")
+        // pass the index of the cinema to CinemaAPI for mark favourite and check for success.
         if (cinemaAPI.archiveCinema(id)) {
-            println("Archive Successful!")
+            println("Mark as favourite Successful!")
         } else {
-            println("Archive NOT Successful")
+            println("Mark as favourite NOT Successful")
         }
     }
 }
@@ -277,14 +279,12 @@ fun writeReceiptToFile(){
 fun readReceiptFile(){
     movieAPI.readReceiptFile()
 }
-// ------------------------------------
-// NOTE REPORTS MENU
-// ------------------------------------
+
 fun searchMovies() {
     val searchTitle = readNextLine("Enter the description to search by: ")
     val searchResults = movieAPI.searchMoviesByTitle(searchTitle)
     if (searchResults.isEmpty()) {
-        println("No notes found")
+        println("No movies found")
     } else {
         println(searchResults)
     }
@@ -307,7 +307,7 @@ private fun askUserToChooseActiveMovie(): Movie? {
     if (movieAPI.numberOfActiveMovies() > 0) {
         val movie = movieAPI.findMovies(readNextInt("\nEnter the id of the movie: "))
         if (movie != null) {
-            if (movie.isMovieArchived) {
+            if (movie.watchLaterMovie) {
                 println("Movie is NOT Active, it is Archived")
             } else {
                 return movie // chosen movie is active

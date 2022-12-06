@@ -46,10 +46,10 @@ class MovieAPI() {
         return false
     }
 
-    fun archiveMovie(id: Int): Boolean {
+    fun watchLaterMovies(id: Int): Boolean {
         val foundMovie = findMovies(id)
-        if ((foundMovie != null) && (!foundMovie.isMovieArchived)) {
-            foundMovie.isMovieArchived = true
+        if ((foundMovie != null) && (!foundMovie.watchLaterMovie)) {
+            foundMovie.watchLaterMovie = true
             return true
         }
         return false
@@ -64,18 +64,18 @@ class MovieAPI() {
 
     fun listActiveMovies() =
         if (numberOfActiveMovies() == 0) "No active notes stored"
-        else formatListString(movies.filter { movies -> !movies.isMovieArchived })
+        else formatListString(movies.filter { movies -> !movies.watchLaterMovie })
 
     fun listArchivedMovies() =
         if (numberOfArchivedMovies() == 0) "No archived notes stored"
-        else formatListString(movies.filter { movies -> movies.isMovieArchived })
+        else formatListString(movies.filter { movies -> movies.watchLaterMovie })
 
     // ----------------------------------------------
     //  COUNTING METHODS FOR MOVIE ArrayList
     // ----------------------------------------------
     fun numberOfMovies() = movies.size
-    fun numberOfArchivedMovies(): Int = movies.count { movie: Movie -> movie.isMovieArchived }
-    fun numberOfActiveMovies(): Int = movies.count { movie: Movie -> !movie.isMovieArchived }
+    fun numberOfArchivedMovies(): Int = movies.count { movie: Movie -> movie.watchLaterMovie }
+    fun numberOfActiveMovies(): Int = movies.count { movie: Movie -> !movie.watchLaterMovie }
 
     // ----------------------------------------------
     //  SEARCHING METHODS

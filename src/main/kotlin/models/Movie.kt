@@ -7,7 +7,7 @@ data class Movie(
     var movieAgeRating: Int = 0,
     var movieStars: Int = 0,
     var movieStatus: String,
-    var isMovieArchived: Boolean = false,
+    var watchLaterMovie: Boolean = false,
     var movies: MutableSet<Movie> = mutableSetOf()
 ) {
     private var lastItemId = 0
@@ -29,7 +29,7 @@ data class Movie(
     }
 
     override fun toString(): String {
-        val archived = if (isMovieArchived) 'Y' else 'N'
-        return "ID : $movieId, Movie: $movieTitle, Genre: $movieGenre, Age Rating: $movieAgeRating, Movie Stars: $movieStars, Movie Status: $movieStatus, Archived: $archived"
+        val watchForLater = if (watchLaterMovie) 'Y' else 'N'
+        return "ID : $movieId, Movie: $movieTitle, Genre: $movieGenre, Age Rating: $movieAgeRating, Movie Stars: $movieStars, Movie Status: $movieStatus, Watch for later?: $watchForLater"
     }
 }
