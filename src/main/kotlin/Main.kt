@@ -31,6 +31,9 @@ fun runMenu() {
             12 -> markFavouriteCinema()
             13 -> writeReceiptToFile()
             14 -> readReceiptFile()
+            100 -> cinemaMenu()
+            200 -> movieMenu()
+            300 -> readAndWriteMenu()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -38,34 +41,93 @@ fun runMenu() {
 }
 
 fun mainMenu() = readNextInt(
+
     """ 
-         > -----------------------------------------------------  
-         > |                  CINEMA APP                       |
-         > -----------------------------------------------------  
-         > | Movie MENU                                        |
-         > |   1) Add a movie                                  |
-         > |   2) List movies                                  |
-         > |   3) Update a movie                               |
-         > |   4) Delete a movie                               |
-         > |   5) Add movie to watch later                     |
-         > |   6) Search movies                                |
-         > |   7) Ask user to choose active movie              |
-         > -----------------------------------------------------  
-         > | Cinema MENU                                       | 
-         > |   8) Add cinema                                   |
-         > |   9) List cinemas                                 |
-         > |   10) Update a cinema                             |
-         > |   11) Delete a cinema                             |
-         > |   12) Archive cinema                              |
-         > -----------------------------------------------------
-         > | Read and write MENU                               |
-         > |   13) Write receipt to file                       | 
-         > |   14) Read receipt from file                      | 
-         > -----------------------------------------------------    
-         > |   0) Exit                                         |
-         > -----------------------------------------------------  
-         > ==>> """.trimMargin(">")
-)
+         > ------------------------------------------------------  
+         > | Welcome to the Cinema App! please choose an option |
+         > ------------------------------------------------------  
+         > | Read and write MENU                                |
+         > |   100) Cinema Menu                                 | 
+         > |   200) Movie Menu                                  |
+         > |   300) Read and Write receipt Menu                 |
+         > ------------------------------------------------------    
+         > |   0) Exit                                          |
+         > ------------------------------------------------------  
+         > ==>> """.trimMargin(">"))
+
+fun cinemaMenu(){
+    val option = readNextInt("""
+    > -----------------------------------------------------
+    > |                  CINEMA APP                       |
+    > -----------------------------------------------------
+    > | Cinema MENU                                       |
+    > |   8) Add a cinema                                 |
+    > |   9) List cinemas                                 |
+    > |   10) Update a cinema                             |
+    > |   11) Delete a cinema                             |
+    > |   12) Add favourite cinema                        |
+    > |   13) Mark favourite cinema                       |
+    > |   0) Exit                                         |
+    > -----------------------------------------------------
+    > ==>> """.trimMargin(">"))
+
+    when (option) {
+        8 -> addCinema()
+        9 -> listCinemas()
+        10 -> updateCinema()
+        11 -> deleteCinema()
+        12 -> markFavouriteCinema()
+        else -> println("Invalid option entered: $option")
+    }
+}
+
+fun movieMenu(){
+    val option = readNextInt("""
+    > -----------------------------------------------------  
+    > |                  CINEMA APP                       |
+    > -----------------------------------------------------  
+    > | Movie MENU                                        |
+    > |   1) Add a movie                                  |
+    > |   2) List movies                                  |
+    > |   3) Update a movie                               |
+    > |   4) Delete a movie                               |
+    > |   5) Add movie to watch later                     |
+    > |   6) Search movies                                |
+    > |   7) Ask user to choose active movie              |
+    > |   0) Exit                                         |
+    > -----------------------------------------------------  
+    > ==>> """.trimMargin(">"))
+
+    when (option) {
+        1 -> addMovie()
+        2 -> listMovies()
+        3 -> updateMovie()
+        4 -> deleteMovie()
+        5 -> watchLaterMovies()
+        6 -> searchMovies()
+        7 -> askUserToChooseActiveMovie()
+        else -> println("Invalid option entered: $option")
+    }
+}
+
+fun readAndWriteMenu(){
+    val option = readNextInt("""
+    > -----------------------------------------------------
+    > | Read and write MENU                               |
+    > -----------------------------------------------------
+    > |   13) Write receipt to file                       | 
+    > |   14) Read receipt from file                      | 
+    > -----------------------------------------------------    
+    > |   0) Exit                                         |
+    > ----------------------------------------------------- 
+    > ==>> """.trimMargin(">"))
+
+    when (option) {
+        13 -> writeReceiptToFile()
+        14 -> readReceiptFile()
+        else -> println("Invalid option entered: $option")
+    }
+}
 
 // ------------------------------------
 // MOVIE MENU
@@ -297,10 +359,6 @@ fun exitApp() {
     println("Exiting...bye")
     exitProcess(0)
 }
-
-// ------------------------------------
-// HELPER FUNCTIONS
-// ------------------------------------
 
 private fun askUserToChooseActiveMovie(): Movie? {
     listActiveMovies()
