@@ -1,7 +1,10 @@
 package controllers
 
 import models.Cinema
+import utils.ScannerInput
 import utils.Utilities
+import java.io.BufferedReader
+import java.io.File
 import java.util.ArrayList
 
 class CinemaAPI {
@@ -86,6 +89,5 @@ class CinemaAPI {
         }
         return false
     }
-
-    // fun findCinemas(cinemaId : Int) =  cinemas.find{ cinema -> cinema.cinemaId == cinemaId }
+// fun findCinemas(cinemaId : Int) =  cinemas.find{ cinema -> cinema.cinemaId == cinemaId }
 }

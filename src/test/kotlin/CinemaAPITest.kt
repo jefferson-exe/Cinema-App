@@ -131,4 +131,29 @@ class CinemaAPITest {
             Assertions.assertEquals(3, populatedNotes!!.numberOfCinemas())
         }
     }
+
+    @Nested
+    inner class UpdateNotes {
+        @Test
+        fun `updating a note that does not exist returns false`() {
+            assertFalse(populatedNotes!!.update(6, Cinema(0, "Fruit", "Blueberry", 0, 4, "Salt", false)))
+            assertFalse(populatedNotes!!.update(-1, Cinema(0, "Fruit", "Blueberry", 0, 4, "Salt", false)))
+            assertFalse(emptyNotes!!.update(0, Cinema(0, "Fruit", "Blueberry", 0, 4, "Salt", false)))
+        }
+
+        @Test
+        fun `updating a note that exists returns true and updates`() {
+            //check note 5 exists and check the contents
+            assertEquals(swim, populatedNotes!!.findCinemas(4))
+            Assertions.assertEquals("Mango", populatedNotes!!.findCinemas(4)!!.cinemaName)
+            Assertions.assertEquals(0, populatedNotes!!.findCinemas(4)!!.cinemaPhone)
+            Assertions.assertEquals("Seagull", populatedNotes!!.findCinemas(4)!!.cinemaEmail)
+
+            //update note 5 with new information and ensure contents updated successfully
+            assertTrue(populatedNotes!!.update(4, Cinema(0, "Fruit", "Blueberry", 0, 4, "Salt", false)))
+            Assertions.assertEquals("Fruit", populatedNotes!!.findCinemas(4)!!.cinemaName)
+            Assertions.assertEquals(0, populatedNotes!!.findCinemas(4)!!.cinemaPhone)
+            Assertions.assertEquals("Salt", populatedNotes!!.findCinemas(4)!!.cinemaEmail)
+        }
+    }
 }
